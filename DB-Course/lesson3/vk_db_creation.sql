@@ -136,3 +136,30 @@ CREATE TABLE `photos` (
 	FOREIGN KEY (album_id) REFERENCES photo_albums(id),
     FOREIGN KEY (media_id) REFERENCES media(id)
 );
+
+/*
+Практическое задание по теме “Введение в проектирование БД”
+
+    1. Написать cкрипт, добавляющий в БД vk, которую создали на занятии, 3 новые таблицы (с перечнем полей, указанием индексов и внешних ключей)
+
+ */
+
+DROP TABLE IF EXISTS `visit_history`;
+CREATE TABLE `visit_history` (
+	`session_id` BINARY(16) PRIMARY KEY NOT NULL UNIQUE,
+	`user_id` BIGINT UNSIGNED NOT NULL,
+	`ipv4` INT UNSIGNED,
+	`ipv6` BINARY(16),
+	`loged_in` DATETIME DEFAULT NOW(),
+	`loged_out` DATETIME DEFAULT NULL,
+	FOREIGN KEY (`user_id`) REFERENCES users(`id`)
+);
+
+/*
+ * Смотрим правильно ли работатет UID
+INSERT INTO users (firstname ,lastname, email ) VALUES('Вася', 'Пупкин', 'vasy@mail.ru'); -- Заполним связанные таблицы
+INSERT INTO `visit_history`(`session_id`,`user_id`) VALUES(UUID_TO_BIN(UUID()),1); -- Запишем UID
+SELECT BIN_TO_UUID(session_id) FROM visit_history; -- Проверим
+-- Вывод в читаемой форме d27af281-4847-11ea-b57a-52540027ba97
+*/
+
