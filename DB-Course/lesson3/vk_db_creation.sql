@@ -162,4 +162,23 @@ INSERT INTO `visit_history`(`session_id`,`user_id`) VALUES(UUID_TO_BIN(UUID()),1
 SELECT BIN_TO_UUID(session_id) FROM visit_history; -- Проверим
 -- Вывод в читаемой форме d27af281-4847-11ea-b57a-52540027ba97
 */
+DROP TABLE IF EXISTS `music_playlist`;
+CREATE TABLE `music_playlist` (
+	`id` SERIAL PRIMARY KEY,
+    `user_id` BIGINT UNSIGNED DEFAULT NULL,
 
+    FOREIGN KEY (`user_id`) REFERENCES users(`id`)
+);
+
+DROP TABLE IF EXISTS `music`;
+CREATE TABLE `music` (
+	`id` SERIAL PRIMARY KEY,
+	`song_name` varchar(255) DEFAULT NULL,
+	`artist` varchar(255) DEFAULT NULL,
+	`album` varchar(255) DEFAULT NULL,
+	`album_id` BIGINT UNSIGNED NOT NULL,
+	`media_id` BIGINT UNSIGNED NOT NULL,
+
+	FOREIGN KEY (`album_id`) REFERENCES music_playlist(`id`),
+    FOREIGN KEY (`media_id`) REFERENCES media(`id`)
+);
