@@ -58,8 +58,37 @@ INSERT INTO cities (label,name) VALUES
 	('novgorod','Новгород'),
 	('kazan','Казань'),
 	('omsk','Омск');
+select * from flights;
 
-select 
-	id,
-	(select name FROM cities where flights.`from` LIKE cities.label)AS`from`, `to`
-FROM flights;
+-- корявенько но работает боюсь представить сколько уйдет времени на такой запрос в реальной базе, хотя сама база неправильная
+SELECT DISTINCT A.id , A.`from` , D.`to`
+FROM
+(select fs.id , ci.`name` as `from` from flights AS fs RIGHT JOIN cities AS ci on fs.`from` LIKE ci.label) A
+JOIN
+(select fs1.id , ci1.`name` as `to` from flights AS fs1 RIGHT JOIN cities AS ci1 on fs1.`to` LIKE ci1.label) D
+ON A.id = D.id
+ORDER BY A.id;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
