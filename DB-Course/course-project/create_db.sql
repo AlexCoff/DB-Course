@@ -6,10 +6,12 @@ DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `first_name` varchar(255) DEFAULT NULL COMMENT 'Имя покупателя',
-  `lastnamet_name` varchar(255) DEFAULT NULL COMMENT 'Фамилия покупателя',
+  `last_name` varchar(255) DEFAULT NULL COMMENT 'Фамилия покупателя',
   `email` varchar(255) NOT NULL UNIQUE COMMENT 'E-mail',
   `phone` bigint NOT NULL UNIQUE COMMENT 'Phone',
   `is_active` BIT DEFAULT 1,
+  INDEX full_name_idx (`first_name`, `last_name`),
+  INDEX email_idx (`email`),
   PRIMARY KEY (`id`)
 ) COMMENT='Покупатели';
 
@@ -28,6 +30,7 @@ CREATE TABLE `users_profiles` (
   `created_at` datetime DEFAULT current_timestamp() COMMENT 'Дата регистрации',
   `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
+  INDEX user_locale_idx(`user_id`,`locale_id`),
   FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   FOREIGN KEY (`locale_id`) REFERENCES `locales` (`id`)
 ) COMMENT='Профиль пользователя';
@@ -85,6 +88,7 @@ CREATE TABLE `products` (
   `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `is_active` BIT DEFAULT 1,
   PRIMARY KEY (`id`),
+  INDEX `product_name_idx` (`name`),
   KEY `index_of_catalog_id` (`catalog_id`),
   CONSTRAINT `products_ibfk_1` FOREIGN KEY (`catalog_id`) REFERENCES `catalogs` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 )COMMENT='Товарные позиции';
