@@ -138,7 +138,8 @@ CREATE TABLE `product_at_storehouse` (
   `created_at` datetime DEFAULT current_timestamp(),
   `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   FOREIGN KEY (`product_id`) REFERENCES `products` (`id`),
-  FOREIGN KEY (`storehous_id`) REFERENCES `storehouses` (`id`)
+  FOREIGN KEY (`storehous_id`) REFERENCES `storehouses` (`id`),
+  UNIQUE KEY `unique_products_at_store_idx`(`product_id`, `storehous_id`)
 ) COMMENT='Склады';
 
 DROP TABLE IF EXISTS `product_in_reserve`;
