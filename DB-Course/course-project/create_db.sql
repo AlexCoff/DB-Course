@@ -97,12 +97,14 @@ DROP TABLE IF EXISTS `orders`;
 CREATE TABLE `orders` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `user_id` bigint unsigned DEFAULT NULL,
-  `status` ENUM('Submitted', 'Paid', 'Parts Picked ', 'Parts Verified' ,'Scanned for Dispatch' , 'Ready to Ship','Picked Up by Carrier','Traceable','Delivered'),
+  `status` ENUM('Submitted', 'Paid', 'Parts Picked ', 'Parts Verified' ,'Scanned for Dispatch' , 'Ready to Ship','Picked Up by Carrier','Traceable','Delivered') COMMENT = 'Статус заказа', 
   `created_at` datetime DEFAULT current_timestamp(),
   `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `address_id` BIGINT unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `index_of_user_id` (`user_id`),
-  CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  FOREIGN KEY (`address_id`) REFERENCES `shipping_address` (`id`) 
 ) COMMENT='Скидки';
 
 DROP TABLE IF EXISTS `orders_products`;
@@ -117,12 +119,13 @@ CREATE TABLE `orders_products` (
   KEY `order_id` (`order_id`),
   KEY `product_id` (`product_id`),
   CONSTRAINT `orders_products_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `orders_products_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT `orders_products_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  UNIQUE KEY `unique_products_at_order_idx`(`order_id`, `product_id`)
 ) COMMENT='Состав заказа';
 
 DROP TABLE IF EXISTS `storehouses`;
 CREATE TABLE `storehouses` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Название',
   `created_at` datetime DEFAULT current_timestamp(),
   `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -139,7 +142,7 @@ CREATE TABLE `product_at_storehouse` (
   `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   FOREIGN KEY (`product_id`) REFERENCES `products` (`id`),
   FOREIGN KEY (`storehous_id`) REFERENCES `storehouses` (`id`),
-  UNIQUE KEY `unique_products_at_store_idx`(`product_id`, `storehous_id`)
+  UNIQUE KEY `unique_products_at_store_idx`(`product_id`, `storehous_id`) -- Уникальный ключ для того чтобы на складе не было дублирования товара
 ) COMMENT='Склады';
 
 DROP TABLE IF EXISTS `product_in_reserve`;

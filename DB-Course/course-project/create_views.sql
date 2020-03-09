@@ -1,5 +1,5 @@
 -- Представления
--- Вывод товаров по складам
+-- Вывод оставшихся неактивных товаров по складам  
 CREATE or replace VIEW view_storehouse_inactive_prod
 AS 
 	SELECT
@@ -12,7 +12,8 @@ AS
 	JOIN storehouses sh2 ON pas.storehous_id = sh2.id 
 	WHERE p2.is_active = 0 AND pas.quantity > 0
 	ORDER BY sh2.name;
-	
+
+-- Вывод товаров на складах
 CREATE or replace VIEW view_products_by_storehous
 AS 
 	SELECT 
@@ -28,6 +29,7 @@ AS
 	WHERE pas.quantity > 0
 	ORDER BY sh2.id ;
 
+-- Вывод основной пользовательской информации
 CREATE or replace VIEW view_user_info
 AS
 	SELECT 
